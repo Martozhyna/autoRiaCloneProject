@@ -5,7 +5,9 @@ from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.permissions.is_premium import IsPremium
 from core.permissions.is_superuser import IsSuperuser
+from core.services.email_service import EmailService
 
 from apps.cars.serializers import CarSerializer
 from apps.users.models import ProfileModel
@@ -120,3 +122,9 @@ class UserProfileUpdateView(UpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+
+
+class UserSendEmailView(GenericAPIView):
+    def get(self, *args, **kwargs):
+        EmailService.send_email({'user': 'Max'})
+        return Response(status=status.HTTP_200_OK)

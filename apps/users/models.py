@@ -12,7 +12,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)
     is_premium = models.BooleanField(default=False)
