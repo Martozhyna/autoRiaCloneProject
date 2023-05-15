@@ -7,7 +7,7 @@ name = "pypi"
 djangorestframework = "*"
 mysqlclient = "*"
 djangorestframework-simplejwt = "*"
-
+pillow = "*"
 
 [dev-packages]
 isort = "*"

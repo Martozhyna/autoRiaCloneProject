@@ -15,15 +15,21 @@ class CarListView(ListAPIView):
     permission_classes = (AllowAny,)
 
 
-#створення машин (юзер що створив = залогінений юзер)
+# створення машин (юзер що створив = залогінений юзер), як тільки створене оголошоння юзер стає продавцем
 class CarCreateView(CreateAPIView):
     serializer_class = CarSerializer
     queryset = CarModel.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+        user = self.request.user
+        user.is_seller = True
+        user.save()
 
 
 class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = CarModel.objects.all()
     serializer_class = CarSerializer
+
+
+
