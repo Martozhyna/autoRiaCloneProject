@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
+from core.services.uppload_user_photo_service import upload_to
+
 from apps.users.managers import UserManager
 
 
@@ -29,4 +31,5 @@ class ProfileModel(models.Model):
     name = models.CharField(max_length=20)
     surname = models.CharField(max_length=25)
     age = models.IntegerField()
+    user_photo = models.ImageField(upload_to=upload_to, blank=True)
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='profile')

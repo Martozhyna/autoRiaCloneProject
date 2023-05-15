@@ -8,8 +8,9 @@ from rest_framework.views import APIView
 from core.permissions.is_superuser import IsSuperuser
 
 from apps.cars.serializers import CarSerializer
+from apps.users.models import ProfileModel
 from apps.users.models import UserModel as User
-from apps.users.serializers import UserSerializer
+from apps.users.serializers import ProfileSerializer, UserSerializer
 
 UserModel: User = get_user_model()
 
@@ -18,7 +19,7 @@ UserModel: User = get_user_model()
 class UserListView(ListAPIView):
     serializer_class = UserSerializer
     queryset = UserModel.objects.all()
-    permission_classes = (IsSuperuser, )
+    permission_classes = (IsSuperuser,)
 
     def get_queryset(self):
         return UserModel.objects.exclude(pk=self.request.user.pk)
@@ -111,3 +112,11 @@ class UserUnBlockView(GenericAPIView):
         user.save()
         serializer = UserSerializer(user)
         return Response(serializer.data, status.HTTP_200_OK)
+
+
+class UserProfileUpdateView(UpdateAPIView):
+    serializer_class = ProfileSerializer
+    queryset = ProfileModel.objects.all()
+
+    def get_object(self):
+        return self.request.user.profile

@@ -1,6 +1,14 @@
 from django.urls import path
 
-from .views import AdminToUser, UserBlockView, UserCarListView, UserListView, UserToAdmin, UserUnBlockView
+from .views import (
+    AdminToUser,
+    UserBlockView,
+    UserCarListView,
+    UserListView,
+    UserProfileUpdateView,
+    UserToAdmin,
+    UserUnBlockView,
+)
 
 urlpatterns = [
    path('', UserListView.as_view(), name='users_list_view'),
@@ -9,6 +17,7 @@ urlpatterns = [
    path('/<int:pk>/to_user', AdminToUser.as_view(), name='admin_to_user'),
    path('/<int:pk>/block', UserBlockView.as_view(), name='users_block'),
    path('/<int:pk>/unblock', UserUnBlockView.as_view(), name='users_unblock'),
+   path('/profile/add_photo', UserProfileUpdateView.as_view(), name='users_profile_add_photo'),
 
 
 

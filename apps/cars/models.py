@@ -19,7 +19,14 @@ class CarModel(models.Model):
     city_of_sale = models.CharField(max_length=20, validators=[V.MinLengthValidator(2)])
     year = models.IntegerField()
     price = models.IntegerField()
-    photo = models.ImageField(upload_to=upload_to, blank=True)
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='cars')
     created_add = models.DateTimeField(auto_now_add=True)
     updated_add = models.DateTimeField(auto_now=True)
+
+
+class CarPhotoModel(models.Model):
+    class Meta:
+        db_table = 'cars_photo'
+
+    photo = models.ImageField(upload_to=upload_to, blank=True)
+    car = models.ForeignKey(CarModel, on_delete=models.CASCADE, related_name='photos')
