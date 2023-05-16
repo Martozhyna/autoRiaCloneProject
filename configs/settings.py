@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
 
     #my_apps
     'apps.users',
-    'apps.cars'
+    'apps.cars',
+    'core'
 
 ]
 

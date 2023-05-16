@@ -4,6 +4,7 @@ from django.db import models
 
 from core.services.uppload_car_service import upload_to
 
+from apps.cars.managers import CarManager
 from apps.users.models import ProfileModel
 from apps.users.models import UserModel as User
 
@@ -13,6 +14,7 @@ UserModel = get_user_model()
 class CarModel(models.Model):
     class Meta:
         db_table = 'cars'
+        ordering = ('id',)
 
     brand = models.CharField(max_length=20, validators=[V.MinLengthValidator(2)])
     model = models.CharField(max_length=20, validators=[V.MinLengthValidator(2)])
@@ -22,6 +24,8 @@ class CarModel(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='cars')
     created_add = models.DateTimeField(auto_now_add=True)
     updated_add = models.DateTimeField(auto_now=True)
+
+    objects = CarManager.as_manager()
 
 
 class CarPhotoModel(models.Model):
