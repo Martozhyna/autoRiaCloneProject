@@ -7,9 +7,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from core.services.email_service import EmailService
-from core.services.jwt_service import ActivateToken, JWTService, RecoveryPasswordToken
+from core.services.jwt_service import ActivateToken, JWTService, PremiumAddToken, RecoveryPasswordToken
 
-from apps.auth.serializers import EmailSerializer
+from apps.auth.serializers import CreditCardDetails, EmailSerializer
 from apps.users.models import UserModel as User
 from apps.users.serializers import UserSerializer
 
@@ -66,3 +66,27 @@ class AuthNewPasswordSendView(GenericAPIView):
         user.set_password(data['password'])
         user.save()
         return Response(status=status.HTTP_200_OK)
+
+
+class AuthPremiumAccountRequestView(GenericAPIView):
+    def post(self, *args, **kwargs):
+        data = self.request.data
+        serializer = CreditCardDetails(data=data)
+        serializer.is_valid(raise_exception=True)
+        user = get_object_or_404(UserModel, email=data['email'])
+        EmailService.premium_add(user)
+        return Response(status=status.HTTP_200_OK)
+
+
+class AuthPremiumAccountActivateView(GenericAPIView):
+    @atomic
+    def get(self, *args, **kwargs):
+        token = kwargs['token']
+        user = JWTService.validate_token(token, PremiumAddToken)
+        if not user.is_seller:
+            return Response('if you want buy premium account you must be seller')
+        user.is_premium = True
+        user.save()
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status.HTTP_200_OK)
+
