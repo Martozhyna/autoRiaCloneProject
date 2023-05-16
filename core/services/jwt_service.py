@@ -24,6 +24,11 @@ class ActivateToken(ActionToken):
     lifetime = ActionEnum.ACTIVATE.exp_time
 
 
+class RecoveryPasswordToken(ActionToken):
+    token_type = ActionEnum.RECOVERY_PASSWORD.token_type
+    lifetime = ActionEnum.RECOVERY_PASSWORD.exp_time
+
+
 class JWTService:
     @staticmethod
     def create_token(user, token_class: ActionTokenClassType):
