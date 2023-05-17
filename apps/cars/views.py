@@ -22,7 +22,7 @@ class CarListView(ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = CarSerializer
     queryset = CarModel.objects.all()
-    # filterset_class = CarFilter
+    filterset_class = CarFilter
 
 
 # створення машин (юзер що створив = залогінений юзер), як тільки створене оголошоння юзер стає продавцем
@@ -66,7 +66,6 @@ class CarPhotoDeleteView(DestroyAPIView):
 
 class CarAveragePriceInUkraineView(ListAPIView):
     permission_classes = (IsPremium,)
-    filterset_class = CarFilter
 
     def get(self, request, *args, **kwargs):
         # cars = CarModel.objects.get_cars_by_auto_park_id('Volvo')
@@ -88,7 +87,6 @@ class CarAveragePriceInUkraineView(ListAPIView):
 
 class CarAveragePriceInCityView(ListAPIView):
     permission_classes = (IsPremium,)
-    filterset_class = CarFilter
 
     def get(self, request, *args, **kwargs):
         cars = CarModel.objects.all()
