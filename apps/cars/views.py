@@ -14,7 +14,14 @@ from core.permissions.is_premium import IsPremium
 
 from apps.cars.filters import CarFilter
 from apps.cars.models import CarModel, CarPhotoModel
-from apps.cars.serializers import CarPhotoSerializer, CarSerializer
+from apps.cars.serializers import (
+    CarBrandProfinityFilterSerializer,
+    CarCityProfinityFilterSerializer,
+    CarModelProfinityFilterSerializer,
+    CarPhotoSerializer,
+    CarSerializer,
+    CarViewSerializer,
+)
 
 
 # перегляд машин (для всіх)
@@ -26,20 +33,55 @@ class CarListView(ListAPIView):
 
 
 # створення машин (юзер що створив = залогінений юзер), як тільки створене оголошоння юзер стає продавцем
-class CarCreateView(CreateAPIView):
-    serializer_class = CarSerializer
+# class CarCreateView(CreateAPIView):
+#     serializer_class = CarSerializer
+#     queryset = CarModel.objects.all()
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
+#         user = self.request.user
+#         user.is_seller = True
+#         user.save()
+
+class CarCreateView(GenericAPIView):
     queryset = CarModel.objects.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-        user = self.request.user
-        user.is_seller = True
-        user.save()
+    def post(self, serializer):
+        data = self.request.data
+        brand_profinity = CarBrandProfinityFilterSerializer(data=data)
+        model_profinity = CarModelProfinityFilterSerializer(data=data)
+        city_profinity = CarCityProfinityFilterSerializer(data=data)
+
+        if not brand_profinity.is_valid() and not model_profinity.is_valid() and not city_profinity.is_valid():
+            serializer = CarSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=self.request.user, is_visible=True)
+            user = self.request.user
+
+            if user.is_seller and not user.is_premium:
+                return Response('in order to post more ads you should purchase a premium subscription')
+
+            else:
+                user.is_seller = True
+                user.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+            return Response('the fields cannot contain obscene words', status=status.HTTP_400_BAD_REQUEST)
 
 
 class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = CarModel.objects.all()
     serializer_class = CarSerializer
+    permission_classes = (AllowAny,)
+
+    def get(self, *args, **kwargs):
+        car = self.get_object()
+        car.views += 1
+        print(car.views)
+        serializer = CarSerializer(car)
+        car.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CarAddPhotosView(GenericAPIView):
@@ -103,3 +145,14 @@ class CarAveragePriceInCityView(ListAPIView):
             return Response(average_price)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class CarListWithNumberOfView(GenericAPIView):
+    queryset = CarModel.objects.all()
+    permission_classes = (IsPremium,)
+
+    def get(self, *args, **kwargs):
+        car = self.get_object()
+        serializer = CarViewSerializer(car)
+        car.save()
+        return Response(car.views, status=status.HTTP_200_OK)

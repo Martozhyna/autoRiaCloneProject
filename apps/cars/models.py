@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core import validators as V
 from django.db import models
 
+from core.enums.regex_enum import RegEx
 from core.services.uppload_car_service import upload_to
 
 from apps.cars.managers import CarManager
@@ -16,12 +17,14 @@ class CarModel(models.Model):
         db_table = 'cars'
         ordering = ('id',)
 
-    brand = models.CharField(max_length=20, validators=[V.MinLengthValidator(2)])
+    brand = models.CharField(max_length=20)
     model = models.CharField(max_length=20, validators=[V.MinLengthValidator(2)])
     city_of_sale = models.CharField(max_length=20, validators=[V.MinLengthValidator(2)])
     year = models.IntegerField()
     price = models.IntegerField()
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='cars')
+    is_visible = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
     created_add = models.DateTimeField(auto_now_add=True)
     updated_add = models.DateTimeField(auto_now=True)
 
