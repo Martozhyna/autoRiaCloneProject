@@ -25,10 +25,16 @@ class CarModel(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='cars')
     is_visible = models.BooleanField(default=False)
     views = models.IntegerField(default=0)
+    # auto_park = models.ForeignKey(AutoParkModel, null=True, blank=True, on_delete=models.SET_NULL)
     created_add = models.DateTimeField(auto_now_add=True)
     updated_add = models.DateTimeField(auto_now=True)
 
+
+
     objects = CarManager.as_manager()
+
+
+# print(CarModel.objects.filter(auto_park_id=0))
 
 
 class CarPhotoModel(models.Model):

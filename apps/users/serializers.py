@@ -21,13 +21,14 @@ class ProfileSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     profile = ProfileSerializer()
     cars = CarSerializer(many=True, read_only=True)
+    # auto_parks = AutoParkSerializer(many=True, read_only=True)
 
     class Meta:
         model = UserModel
         fields = (
             'id', 'email', 'password', 'is_active', 'is_staff', 'is_seller', 'is_premium', 'is_superuser', 'last_login',
             'created_at',
-            'updated_at', 'profile', 'cars'
+            'updated_at', 'profile', 'cars',
         )
         read_only_fields = ('id', 'is_active', 'is_staff', 'is_superuser', 'is_seller', 'is_premium', 'last_login',
                             'created_at', 'updated_at')

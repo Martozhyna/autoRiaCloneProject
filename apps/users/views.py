@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -126,3 +127,6 @@ class UserSendEmailView(GenericAPIView):
     def get(self, *args, **kwargs):
         EmailService.send_email({'user': 'Max'})
         return Response(status=status.HTTP_200_OK)
+
+
+

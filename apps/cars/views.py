@@ -52,6 +52,8 @@ class CarCreateView(GenericAPIView):
         model_profinity = CarModelProfinityFilterSerializer(data=data)
         city_profinity = CarCityProfinityFilterSerializer(data=data)
 
+
+
         if not brand_profinity.is_valid() and not model_profinity.is_valid() and not city_profinity.is_valid():
             serializer = CarSerializer(data=data)
             serializer.is_valid(raise_exception=True)
@@ -64,6 +66,8 @@ class CarCreateView(GenericAPIView):
             else:
                 user.is_seller = True
                 user.save()
+                # print(serializer.data['id'])
+                # print(self.request.user.is_superuser)
                 return Response(serializer.data, status=status.HTTP_200_OK)
 
         else:
@@ -156,3 +160,5 @@ class CarListWithNumberOfView(GenericAPIView):
         serializer = CarViewSerializer(car)
         car.save()
         return Response(car.views, status=status.HTTP_200_OK)
+
+
