@@ -85,7 +85,7 @@ class AuthNewPasswordSendView(GenericAPIView):
 
 class AuthPremiumAccountRequestView(GenericAPIView):
     """
-       Premium account get view
+       Premium account get view (you must enter the bank card number, try 1111111111111111)
     """
     def post(self, *args, **kwargs):
         data = self.request.data

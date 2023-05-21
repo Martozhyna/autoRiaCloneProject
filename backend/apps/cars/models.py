@@ -12,7 +12,7 @@ from djmoney.money import Money
 from core.enums.regex_enum import RegEx
 from core.services.uppload_car_service import upload_to
 
-from apps.cars.managers import CarManager
+# from apps.cars.managers import CarManager
 from apps.users.models import ProfileModel
 from apps.users.models import UserModel as User
 
@@ -36,7 +36,7 @@ class CarModel(models.Model):
     created_add = models.DateTimeField(auto_now_add=True)
     updated_add = models.DateTimeField(auto_now=True)
 
-    objects = CarManager.as_manager()
+    # objects = CarManager.as_manager()
 
 
 # print(CarModel.objects.filter(auto_park_id=0))
