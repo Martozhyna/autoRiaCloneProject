@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+import moneyed
+
 from .extra_conf import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,6 +35,17 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
 
+# UAH = moneyed.add_currency(
+#     code='UAH',
+#     numeric='980',
+#     name='Hryvnia',
+#     countries=['Ukraine', ]
+# )
+#
+# CURRENCIES = ('USD', 'UAH', 'EUR')
+
+OPEN_EXCHANGE_RATES_APP_ID = '0ea5ad23bf744a70afae49f99d132081'
+
 
 AUTH_USER_MODEL = 'users.UserModel'
 
@@ -46,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'corsheaders',
+    'djmoney.contrib.exchange',
 
     # my_apps
     'apps.users',

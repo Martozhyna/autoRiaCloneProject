@@ -11,6 +11,7 @@ pillow = "*"
 django-dotenv = "*"
 django-filter = "*"
 django-cors-headers = "*"
+django-money = {extras = ["exchange"], version = "*"}
 
 [dev-packages]
 isort = "*"

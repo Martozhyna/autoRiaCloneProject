@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
@@ -46,17 +48,28 @@ class CarListView(ListAPIView):
 class CarCreateView(GenericAPIView):
     queryset = CarModel.objects.all()
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        user = self.request.user
+        user.is_seller = True
+        user.save()
+
     def post(self, serializer):
+
         data = self.request.data
+        price = data['price'].strip('$')
+        data.price = int(data['price'])
+
         brand_profinity = CarBrandProfinityFilterSerializer(data=data)
         model_profinity = CarModelProfinityFilterSerializer(data=data)
         city_profinity = CarCityProfinityFilterSerializer(data=data)
 
-
-
         if not brand_profinity.is_valid() and not model_profinity.is_valid() and not city_profinity.is_valid():
+
             serializer = CarSerializer(data=data)
             serializer.is_valid(raise_exception=True)
+            # price = serializer.data.price.amount()
+
             serializer.save(user=self.request.user, is_visible=True)
             user = self.request.user
 
@@ -66,12 +79,23 @@ class CarCreateView(GenericAPIView):
             else:
                 user.is_seller = True
                 user.save()
-                # print(serializer.data['id'])
-                # print(self.request.user.is_superuser)
                 return Response(serializer.data, status=status.HTTP_200_OK)
 
         else:
             return Response('the fields cannot contain obscene words', status=status.HTTP_400_BAD_REQUEST)
+
+# class CarCreateView(GenericAPIView):
+#     queryset = CarModel.objects.all()
+#
+#     def post(self, serializer):
+#         data = self.request.data
+#         serializer = CarSerializer(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         # serializer.save(user=self.request.user)
+#         print(self.request.user.id)
+#         print(serializer.data)
+#         print(data)
+#         return Response(serializer.data)
 
 
 class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
@@ -160,5 +184,3 @@ class CarListWithNumberOfView(GenericAPIView):
         serializer = CarViewSerializer(car)
         car.save()
         return Response(car.views, status=status.HTTP_200_OK)
-
-

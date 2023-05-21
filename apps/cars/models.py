@@ -1,6 +1,13 @@
+from decimal import Decimal
+
 from django.contrib.auth import get_user_model
 from django.core import validators as V
 from django.db import models
+
+from djmoney.contrib.exchange.models import convert_money
+from djmoney.models.fields import MoneyField
+from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
+from djmoney.money import Money
 
 from core.enums.regex_enum import RegEx
 from core.services.uppload_car_service import upload_to
@@ -29,8 +36,6 @@ class CarModel(models.Model):
     created_add = models.DateTimeField(auto_now_add=True)
     updated_add = models.DateTimeField(auto_now=True)
 
-
-
     objects = CarManager.as_manager()
 
 
@@ -43,3 +48,6 @@ class CarPhotoModel(models.Model):
 
     photo = models.ImageField(upload_to=upload_to, blank=True)
     car = models.ForeignKey(CarModel, on_delete=models.CASCADE, related_name='photos')
+
+
+

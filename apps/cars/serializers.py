@@ -29,7 +29,7 @@ class CarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CarModel
-        fields = 'id', 'brand', 'model', 'city_of_sale', 'year', 'price', 'is_visible', 'photos', 'user'
+        fields = ('id', 'brand', 'model', 'city_of_sale', 'year', 'price', 'is_visible', 'photos', 'user',)
 
 
 
@@ -47,10 +47,11 @@ class CarCityProfinityFilterSerializer(serializers.Serializer):
     city_of_sale = serializers.CharField(
         validators=[V.RegexValidator(RegEx.PROFANITY_FILTER.pattern, RegEx.PROFANITY_FILTER.msg)])
 
+
 class CarViewSerializer(serializers.ModelSerializer):
     user = SellerRelatedFieldSerializer(read_only=True)
     photos = CarPhotoSerializer(many=True, read_only=True)
 
     class Meta:
         model = CarModel
-        fields = 'id', 'brand', 'model', 'city_of_sale', 'year', 'price', 'is_visible', 'photos', 'user', 'views'
+        fields = 'id', 'brand', 'model', 'city_of_sale', 'year', 'price', 'is_visible', 'photos', 'user', 'views',
