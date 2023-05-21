@@ -17,11 +17,17 @@ UserModel: User = get_user_model()
 
 
 class AuthRegisterView(CreateAPIView):
+    """
+       Register new user
+    """
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
 
 
 class AuthMeView(RetrieveAPIView):
+    """
+       You can see information about yourself
+    """
     serializer_class = UserSerializer
     queryset = UserModel.objects.all()
 
@@ -30,6 +36,9 @@ class AuthMeView(RetrieveAPIView):
 
 
 class ActivateUserView(GenericAPIView):
+    """
+       Activate your user account
+    """
     permission_classes = (AllowAny,)
 
     def get(self, *args, **kwargs):
@@ -42,6 +51,9 @@ class ActivateUserView(GenericAPIView):
 
 
 class AuthRecoveryPasswordView(GenericAPIView):
+    """
+       Recovery password view
+    """
     permission_classes = (AllowAny,)
 
     def post(self, *args, **kwargs):
@@ -54,6 +66,9 @@ class AuthRecoveryPasswordView(GenericAPIView):
 
 
 class AuthNewPasswordSendView(GenericAPIView):
+    """
+       Recovery password
+    """
     permission_classes = (AllowAny,)
 
     @atomic
@@ -69,6 +84,9 @@ class AuthNewPasswordSendView(GenericAPIView):
 
 
 class AuthPremiumAccountRequestView(GenericAPIView):
+    """
+       Premium account get view
+    """
     def post(self, *args, **kwargs):
         data = self.request.data
         serializer = CreditCardDetails(data=data)
@@ -81,6 +99,9 @@ class AuthPremiumAccountRequestView(GenericAPIView):
 
 
 class AuthPremiumAccountActivateView(GenericAPIView):
+    """
+       Premium account activate
+    """
     @atomic
     def get(self, *args, **kwargs):
         token = kwargs['token']

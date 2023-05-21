@@ -19,8 +19,10 @@ from apps.users.serializers import ProfileSerializer, UserSerializer
 UserModel: User = get_user_model()
 
 
-# список усіх користувачів
 class UserListView(ListAPIView):
+    """
+       Get all users
+    """
     serializer_class = UserSerializer
     queryset = UserModel.objects.all()
     permission_classes = (IsSuperuser,)
@@ -31,6 +33,9 @@ class UserListView(ListAPIView):
 
 # список машин конкретного юзера
 class UserCarListView(CreateAPIView):
+    """
+       Get cars list about user
+    """
     queryset = UserModel.objects.all()
     serializer_class = CarSerializer
 
@@ -44,6 +49,9 @@ class UserCarListView(CreateAPIView):
 
 
 class UserToAdmin(GenericAPIView):
+    """
+       Assignment of administrator status
+    """
     permission_classes = (IsSuperuser,)
 
     def get_queryset(self):
@@ -62,6 +70,9 @@ class UserToAdmin(GenericAPIView):
 
 
 class AdminToUser(GenericAPIView):
+    """
+       Assignment of user status
+    """
     permission_classes = (IsSuperuser,)
 
     def get_queryset(self):
@@ -80,6 +91,9 @@ class AdminToUser(GenericAPIView):
 
 
 class UserBlockView(GenericAPIView):
+    """
+       User block
+    """
     permission_classes = (BlockUnblockUserPermission,)
 
     def get_queryset(self):
@@ -98,6 +112,9 @@ class UserBlockView(GenericAPIView):
 
 
 class UserUnBlockView(GenericAPIView):
+    """
+       User unblock
+    """
     permission_classes = (BlockUnblockUserPermission,)
 
     def get_queryset(self):
@@ -116,6 +133,9 @@ class UserUnBlockView(GenericAPIView):
 
 
 class UserProfileUpdateView(UpdateAPIView):
+    """
+       User profile update
+    """
     serializer_class = ProfileSerializer
     queryset = ProfileModel.objects.all()
 
@@ -124,6 +144,9 @@ class UserProfileUpdateView(UpdateAPIView):
 
 
 class UserSendEmailView(GenericAPIView):
+    """
+      Send user email
+    """
     def get(self, *args, **kwargs):
         EmailService.send_email({'user': 'Max'})
         return Response(status=status.HTTP_200_OK)

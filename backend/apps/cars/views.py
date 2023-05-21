@@ -1,16 +1,7 @@
-from decimal import Decimal
-
 from rest_framework import status
-from rest_framework.generics import (
-    CreateAPIView,
-    DestroyAPIView,
-    GenericAPIView,
-    ListAPIView,
-    RetrieveUpdateDestroyAPIView,
-)
+from rest_framework.generics import DestroyAPIView, GenericAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from core.permissions.is_premium import IsPremium
 
@@ -28,24 +19,19 @@ from apps.cars.serializers import (
 
 # перегляд машин (для всіх)
 class CarListView(ListAPIView):
+    """
+      Get all cars
+    """
     permission_classes = (AllowAny,)
     serializer_class = CarSerializer
     queryset = CarModel.objects.all()
     filterset_class = CarFilter
 
 
-# створення машин (юзер що створив = залогінений юзер), як тільки створене оголошоння юзер стає продавцем
-# class CarCreateView(CreateAPIView):
-#     serializer_class = CarSerializer
-#     queryset = CarModel.objects.all()
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-#         user = self.request.user
-#         user.is_seller = True
-#         user.save()
-
 class CarCreateView(GenericAPIView):
+    """
+       Car create
+    """
     queryset = CarModel.objects.all()
 
     def perform_create(self, serializer):
@@ -68,12 +54,10 @@ class CarCreateView(GenericAPIView):
 
             serializer = CarSerializer(data=data)
             serializer.is_valid(raise_exception=True)
-            # price = serializer.data.price.amount()
-
             serializer.save(user=self.request.user, is_visible=True)
             user = self.request.user
 
-            if user.is_seller and not user.is_premium:
+            if user.is_seller and not user.is_premium and not user.is_superuser:
                 return Response('in order to post more ads you should purchase a premium subscription')
 
             else:
@@ -84,21 +68,11 @@ class CarCreateView(GenericAPIView):
         else:
             return Response('the fields cannot contain obscene words', status=status.HTTP_400_BAD_REQUEST)
 
-# class CarCreateView(GenericAPIView):
-#     queryset = CarModel.objects.all()
-#
-#     def post(self, serializer):
-#         data = self.request.data
-#         serializer = CarSerializer(data=data)
-#         serializer.is_valid(raise_exception=True)
-#         # serializer.save(user=self.request.user)
-#         print(self.request.user.id)
-#         print(serializer.data)
-#         print(data)
-#         return Response(serializer.data)
-
 
 class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    """
+       Car retrieve update destroy
+    """
     queryset = CarModel.objects.all()
     serializer_class = CarSerializer
     permission_classes = (AllowAny,)
@@ -113,6 +87,9 @@ class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 
 class CarAddPhotosView(GenericAPIView):
+    """
+      Add cars photo
+    """
     queryset = CarModel.objects.all()
 
     def post(self, *args, **kwargs):
@@ -127,6 +104,9 @@ class CarAddPhotosView(GenericAPIView):
 
 
 class CarPhotoDeleteView(DestroyAPIView):
+    """
+      Delete cars photo
+    """
     queryset = CarPhotoModel.objects.all()
 
     def perform_destroy(self, instance):
@@ -135,13 +115,15 @@ class CarPhotoDeleteView(DestroyAPIView):
 
 
 class CarAveragePriceInUkraineView(ListAPIView):
+    """
+      Get average price in Ukraine
+    """
     permission_classes = (IsPremium,)
 
     def get(self, request, *args, **kwargs):
-        # cars = CarModel.objects.get_cars_by_auto_park_id('Volvo')
         cars = CarModel.objects.all()
         params_dict = self.request.query_params.dict()
-        # serializer = CarSerializer(instance=cars, many=True)
+
         if 'brand' in params_dict:
             qs = cars.filter(brand__istartswith=params_dict['brand'])
             prices = qs.values('price')
@@ -156,6 +138,9 @@ class CarAveragePriceInUkraineView(ListAPIView):
 
 
 class CarAveragePriceInCityView(ListAPIView):
+    """
+       Get average price in city
+    """
     permission_classes = (IsPremium,)
 
     def get(self, request, *args, **kwargs):
@@ -176,6 +161,9 @@ class CarAveragePriceInCityView(ListAPIView):
 
 
 class CarListWithNumberOfView(GenericAPIView):
+    """
+       Get numbers of view
+    """
     queryset = CarModel.objects.all()
     permission_classes = (IsPremium,)
 
